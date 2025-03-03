@@ -7,13 +7,14 @@ app.config["SECERT_KEY"] = "mycoolawesomekey"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('indx.html')
+    #return 'hello world'
+    return render_template('index.html')
 
 
 @app.route('/morningLight', methods=['POST'])
 def turnOnMLight():
     color = request.form.get('morningColor')
-    print("turning on morning light as %s", color)
+    return ("turning on morning light as %s", color)
     #ser.write(b'H') #I have no clue what this is doing, trying stuff out
 
 @app.route('/nightLight', methods=['POST'])

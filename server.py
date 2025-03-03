@@ -7,7 +7,7 @@ app.config["SECERT_KEY"] = "mycoolawesomekey"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('indx.html')
+    return render_template('index.html')
 
 
 @app.route('/morningLight', methods=['POST'])
@@ -21,6 +21,12 @@ def turnOnNLight():
     color = request.form.get('nightColor')
     print("turning on night light %s", color)
     #ser.write(b'H') #I have no clue what this is doing, trying stuff out
+
+
+@app.route('/bluetooth', methods=['POST'])
+def getBlutooth():
+    requestBluetooth = request.form.get('bluetooth')
+    print("we got here")
 
 if __name__ == '__main__':
      app.run(debug=True)

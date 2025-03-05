@@ -66,30 +66,27 @@ void loop() {
     // Instead of checking for battery level we want to see if we are getting any messages from the website
     // To then later grab that information of the colors to then change but 
     // for now this is a good way to check battery for just a general as well as for later if we decide to go wireless
-    while (central.connected()) {
-      long currentMillis = millis();
-      // if 200ms have passed, check the battery level:
-      if (currentMillis - previousMillis >= 200 && (Serial.available() > 0)) {
-        char incommingMsg = Serial.read();
-        if(incommingMsg == 'H'){
-          previousMillis = currentMillis;
-          updateBatteryLevel();
-        }
-      }
-    }
+    // while (central.connected()) {
+    //   long currentMillis = millis();
+    //   // if 200ms have passed, check the battery level:
+    //   if (currentMillis - previousMillis >= 200) {
+    //     previousMillis = currentMillis;
+    //     updateBatteryLevel();
+    //   }
+    // }
     // when the central disconnects, turn off the LED:
-    digitalWrite(LED_BUILTIN, LOW);
-    Serial.print("Disconnected from central: ");
-    Serial.println(central.address());
+    // digitalWrite(LED_BUILTIN, LOW);
+    // Serial.print("Disconnected from central: ");
+    // Serial.println(central.address());
 
-    // while(central.connect()){
+    while(central.connect()){
     // ** This Should Be For Both Day And Night Lights **
     // If we read somthing from the serial like color hue -> Red to Orange
     // Make a Change in the matrix colors
 
     // If We reasom somthing from the serial like change Date to -> 8:00 - 9:00
     // Make a change in the timer for when the colors should activate
-    // }
+    }
     digitalWrite(LED_BUILTIN, LOW);
     Serial.print("Disconnected from central: ");
     Serial.println(central.address());
@@ -104,8 +101,8 @@ void updateBatteryLevel() {
   int batteryLevel = map(battery, 0, 1023, 0, 100);
 
   if (batteryLevel != oldBatteryLevel) {      // if the battery level has changed
-    // Serial.print("Battery Level % is now: "); // print it
-    // Serial.println(batteryLevel);
+    Serial.print("Battery Level % is now: "); // print it
+    Serial.println(batteryLevel);
     batteryLevelChar.writeValue(batteryLevel);  // and update the battery level characteristic
     oldBatteryLevel = batteryLevel;           // save the level for next comparison
   }

@@ -2,17 +2,12 @@ from flask import Flask, render_template, request
 import serial 
 import serial.tools.list_ports
 
-arduino_ports = [
-    p.device
-    for p in serial.tools.list_ports.comports()
-    if 'Arduino' in p.description 
-]
-
 #https://stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
 
 app = Flask(__name__)
 app.config["SECERT_KEY"] = "mycoolawesomekey"
-ser = serial.Serial(arduino_ports[0], 9600)
+
+ser = serial.Serial()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -44,6 +39,11 @@ def getBlutooth():
     data = request.get_json()
     device_name = data.get("deviceName")
     print("We Have Recieved The Device Name: ", device_name)
+    arduino_ports = [
+    p.device
+    for p in serial.tools.list_ports.comports()
+    if 'Arduino' in p.description ]
+    ser = serial.Serial(arduino_ports[0], 9600)
     # Do this later and make serial have the device name
     return '', 204
 

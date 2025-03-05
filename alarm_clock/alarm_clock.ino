@@ -120,18 +120,13 @@ void updateNightLightsColor(){
 #define NUM_PINS 64
 
 Adafruit_NeoPixel matrix(NUM_PINS, LED_PIN, NEO_GRB + NEO_KHZ800);
-
-void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
   //https://projecthub.arduino.cc/ansh2919/serial-communication-between-python-and-arduino-663756
   pinMode(LED_BUILTIN, OUTPUT);
   matrix.begin();
 
   //https://forum.arduino.cc/t/code-optimising-ws2812-led-matrix-arduino/1068713
-}
 
-void loop() {
   // put your main code here, to run repeatedly:
   if(Serial.available() > 0)
   {
@@ -147,7 +142,7 @@ void loop() {
     }
   }
 }
-}
+
 
 void updateDayTimeLightsColor(){
 

@@ -32,8 +32,6 @@ def getBlutooth():
     # Do this later and make serial have the device name
     return '', 204
 
-
-
 if __name__ == '__main__':
     # ssl_context=('cert.pem', 'key.pem')
      app.run(debug=True)

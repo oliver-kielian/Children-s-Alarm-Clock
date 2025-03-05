@@ -90,9 +90,9 @@ void loop() {
     // If We reasom somthing from the serial like change Date to -> 8:00 - 9:00
     // Make a change in the timer for when the colors should activate
     // }
-    digitalWrite(LED_BUILTIN, LOW);
-    Serial.print("Disconnected from central: ");
-    Serial.println(central.address());
+    // digitalWrite(LED_BUILTIN, LOW);
+    // Serial.print("Disconnected from central: ");
+    // Serial.println(central.address());
   }
 }
 
@@ -104,8 +104,8 @@ void updateBatteryLevel() {
   int batteryLevel = map(battery, 0, 1023, 0, 100);
 
   if (batteryLevel != oldBatteryLevel) {      // if the battery level has changed
-    // Serial.print("Battery Level % is now: "); // print it
-    // Serial.println(batteryLevel);
+    Serial.print("Battery Level % is now: "); // print it
+    Serial.println(batteryLevel);
     batteryLevelChar.writeValue(batteryLevel);  // and update the battery level characteristic
     oldBatteryLevel = batteryLevel;           // save the level for next comparison
   }

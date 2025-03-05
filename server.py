@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request
-#import serial 
+import serial 
 
 app = Flask(__name__)
 app.config["SECERT_KEY"] = "mycoolawesomekey"
-#ser = serial.Serial("COM6", 9600)
+# ser = serial.Serial("Aduino", 9200)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
-
 
 @app.route('/morningLight', methods=['POST'])
 def turnOnMLight():
@@ -21,12 +20,20 @@ def turnOnNLight():
     color = request.form.get('nightColor')
     print("turning on night light %s", color)
     #ser.write(b'H') #I have no clue what this is doing, trying stuff out
+    ser.write(b'H')
+    return '', 204
 
 
 @app.route('/bluetooth', methods=['POST'])
 def getBlutooth():
-    requestBluetooth = request.form.get('bluetooth')
-    print("we got here")
+    data = request.get_json()
+    device_name = data.get("deviceName")
+    print("We Have Recieved The Device Name: ", device_name)
+    # Do this later and make serial have the device name
+    return '', 204
+
+
 
 if __name__ == '__main__':
+    # ssl_context=('cert.pem', 'key.pem')
      app.run(debug=True)

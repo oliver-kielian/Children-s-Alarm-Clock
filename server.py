@@ -22,7 +22,7 @@ def index():
 
 @app.route('/morningLight', methods=['POST'])
 def turnOnMLight():
-    color= request.json.get("morningColor", "#FFFFFF")
+    color= request.form.get("morningColor", "#FFFFFF")
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
     ser.write(f"{r},{g},{b}\n".encode())
@@ -30,7 +30,7 @@ def turnOnMLight():
 
 @app.route('/nightLight', methods=['POST'])
 def turnOnNLight():
-    color= request.json.get("morningColor", "#FFFFFF")
+    color= request.form.get("morningColor", "#FFFFFF")
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
     ser.write(f"{r},{g},{b}\n".encode())

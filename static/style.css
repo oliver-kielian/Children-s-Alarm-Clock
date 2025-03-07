@@ -1,0 +1,13 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color:  #c7b9ea;
+    }
+
+ul{
+    list-style: none;
+    display:flex; gap:30px;
+}

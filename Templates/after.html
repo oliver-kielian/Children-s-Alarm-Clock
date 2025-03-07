@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>Lights</title>
+    <link href="/static/style.css" rel="stylesheet">
+    <h1>Welcome To Your Setup</h1>
+</head>
+<body>
+    <form method="POST" action="/nightLight">
+        Night Light Color: <input type="color" name="morningColor" required><br>
+        <input type="submit" value="TURN ON NIGHTLIGHT"><br>
+    </form>
+    <form method="POST" action="/morningLight">   
+        Morning Light Color: <input type="color" name="nightColor" required><br>
+        <input type="submit" value="TURN ON NIGHTLIGHT"><br>
+    </form>
+
+    <button id="bluetoothButton">Connect to Childrens Alarm Clock!</button>
+    <p id="status"></p>
+    <script src="static/bluetoothScript.js"></script>
+</body>
+</html>

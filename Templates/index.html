@@ -1,19 +1,8 @@
-<html>
-<head>
-    <title>Lights</title>
-</head>
-<body>
-    <form method="POST" action="/nightLight">
-        Night Light Color: <input type="color" name="morningColor" required><br>
-        <input type="submit" value="TURN ON NIGHTLIGHT"><br>
-    </form>
-    <form method="POST" action="/morningLight">   
-        Morning Light Color: <input type="color" name="nightColor" required><br>
-        <input type="submit" value="TURN ON NIGHTLIGHT"><br>
-    </form>
-
-    <button id="bluetoothButton">Connect to Childrens Alarm Clock!</button>
-    <p id="status"></p>
-    <script src="static/bluetoothScript.js"></script>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}
+    HOME
+{% endblock %} 
+{% block content %} 
+<form action="/" method="POST"></form>
+<h1><h1>Welcome To My Home Page Login To Continue</h1></h1>
+{% endblock %}

@@ -31,8 +31,12 @@ def turnOnNLight():
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
     ser.write(f"{r},{g},{b}\n".encode())
     return f"Turing on Night Light as {color}"
-    
 
+@app.route('/setAlarm', methods=['POST'])
+def setAlarm():
+    alarm = request.form.get('alarm')
+    return alarm
+    
 
 @app.route('/bluetooth', methods=['POST'])
 def getBlutooth():

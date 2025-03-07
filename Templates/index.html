@@ -12,6 +12,11 @@
         <input type="submit" value="TURN ON NIGHTLIGHT"><br>
     </form>
 
+    <form method="POST" action="/setAlarm">
+        Set Alarm <input type="time" name="alarm" required><br>
+        <input type="submit" value="SET ALARM"><br>
+    </form>
+
     <button id="bluetoothButton">Connect to Childrens Alarm Clock!</button>
     <p id="status"></p>
     <script src="static/bluetoothScript.js"></script>

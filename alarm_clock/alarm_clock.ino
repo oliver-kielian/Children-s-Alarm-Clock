@@ -149,6 +149,7 @@ void updateBatteryLevel() {
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // This is a function we will use later to allow for us to read in the serial
 // then make changes to our lights based on what the serial tells us
 void updateNightLightsColor(){
@@ -158,6 +159,10 @@ void updateNightLightsColor(){
 void updateDayTimeLightsColor(){
 
 }
+=======
+
+void updateDayTimeLightsColor(){ }
+>>>>>>> Stashed changes
 =======
 
 void updateDayTimeLightsColor(){ }

@@ -4,7 +4,7 @@ from bleak import BleakClient
 from bleak import discover
 
 app = Flask(__name__)
-app.config["SECERT_KEY"] = "mycoolawesomekey"
+app.config["SECRET_KEY"] = "mycoolawesomekey"
 
 characteristic ='c4d6aa1d-e90b-42fa-977e-039e7b401994'
 '''
@@ -46,7 +46,6 @@ def turnOnMLight():
 def turnOnNLight():
     color = request.form.get('nightColor')
     print("turning on night light %s", color)
-    ser.write(b'H')
     return '', 204
 
     
@@ -54,10 +53,13 @@ def turnOnNLight():
 @app.route('/bluetooth', methods=['POST'])
 def getBlutooth():
     address = "9F83D883-81AA-5450-5C2A-5F7A1C9B5E4A"
-    data = "B"
+    data = 'B'
     ''' https://stackoverflow.com/questions/61543406/asyncio-run-runtimeerror-event-loop-is-closed '''
-    # Come back to this as this session seems to not be closing and needs work on!!!
+    ## ALWAYS COME BACK TO THIS - if bluetooth is not working for some reason this is valid code now ##
+    loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
+    loop.run_until_complete(main(address=address, data=data))
+    loop.close()
     return " ", 200
 
 async def main(address, data):

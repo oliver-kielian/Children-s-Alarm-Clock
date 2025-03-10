@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import serial 
 import serial.tools.list_ports
-
+"""
 #https://stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
 """
 app = Flask(__name__)

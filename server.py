@@ -100,9 +100,6 @@ def index():
 
 @app.route('/morningLight', methods=['POST'])
 def turnOnMLight():
-    color = request.form.get('morningColor')
-    print("turning on morning light as %s", color)
-
     color= request.form.get("morningColor", "#FFFFFF")
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
@@ -110,7 +107,6 @@ def turnOnMLight():
 
 @app.route('/nightLight', methods=['POST'])
 def turnOnNLight():
-    color = request.form.get('nightColor')
     color= request.form.get("morningColor", "#FFFFFF")
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
@@ -120,9 +116,13 @@ def turnOnNLight():
 def setNightAlarm():
     data = request.get_json()
     time = data.get("time")
-    print(f"Alarm set to {time}")
     return jsonify({"message": f"Alarm set to {time}"})
 
+@app.route('/morningAlarm', methods=['POST']) 
+def setMorningAlarm():
+    data = request.get_json()
+    time = data.get("time")
+    return jsonify({"message": f"Alarm set to {time}"})
 
 @app.route('/bluetooth', methods=['POST'])
 def getBlutooth():

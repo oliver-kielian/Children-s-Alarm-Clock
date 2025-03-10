@@ -2,7 +2,7 @@ document.getElementById("nightAlarmButton").addEventListener("click", async () =
     let timeValue = document.getElementById("nightAlarm").value;
 
     if (!timeValue) {
-        document.getElementById("nightAlarmResonse").innerText = "Please select a time.";
+        document.getElementById("nightAlarmResponse").innerText = "Please select a time.";
         return;
     }
 
@@ -16,9 +16,9 @@ document.getElementById("nightAlarmButton").addEventListener("click", async () =
         });
 
         let result = await response.json();
-        document.getElementById("nightAlarmResonse").innerText = result.message;
+        document.getElementById("nightAlarmResponse").innerText = result.message;
     } catch (error) {
-        document.getElementById("nightAlarmResonse").innerText = "Error setting alarm.";
+        document.getElementById("nightAlarmResponse").innerText = "Error setting alarm.";
         console.error("Fetch error:", error);
     }
 });

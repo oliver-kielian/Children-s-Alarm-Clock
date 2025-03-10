@@ -46,3 +46,11 @@ document.getElementById("bluetoothButton").addEventListener("click", () => {
     });
 })
 
+
+// Disconnect from the device if we are not on the page
+window.addEventListener('beforeunload', () =>{
+    if(ourDevice && ourDevice.gatt.connected){
+        ourDevice.gatt.disconnect();
+        console.log("We have disconnected from arduino!");
+    }
+});

@@ -1,5 +1,5 @@
 import asyncio
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import *
 from flask_login import *
 from bleak import BleakClient
@@ -115,7 +115,13 @@ def turnOnNLight():
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
     return f"Turing on Night Light as {color}"
-    
+
+@app.route('/nightAlarm', methods=['POST']) 
+def setNightAlarm():
+    data = request.get_json()
+    time = data.get("time")
+    print(f"Alarm set to {time}")
+    return jsonify({"message": f"Alarm set to {time}"})
 
 
 @app.route('/bluetooth', methods=['POST'])

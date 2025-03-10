@@ -6,6 +6,14 @@ document.getElementById("nightAlarmButton").addEventListener("click", async () =
         return;
     }
 
+    let [hours, minutes] = timeValue.split(":").map(Number);
+
+    if(hours < 12)
+        {
+            document.getElementById("nightAlarmResponse").innerText = "Please Select a PM time"
+            return;
+        }
+
     try {
         let response = await fetch("/nightAlarm", {
             method: "POST",

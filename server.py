@@ -3,7 +3,7 @@ import serial
 import serial.tools.list_ports
 
 #https://stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
-
+"""
 app = Flask(__name__)
 app.config["SECERT_KEY"] = "mycoolawesomekey"
 
@@ -11,7 +11,6 @@ ser = serial.Serial()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    #return 'hello world'
     return render_template('index.html')
 
 
@@ -20,8 +19,8 @@ def turnOnMLight():
     color= request.form.get("morningColor", "#FFFFFF")
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
-    ser.write(f"{r},{g},{b}\n".encode())
-    return f"Turing on Morning Light as {color}"
+    #ser.write(f"{r},{g},{b}\n".encode())
+    return "Turing on Morning Light as {color}"
 
 @app.route('/nightLight', methods=['POST'])
 def turnOnNLight():

@@ -184,6 +184,8 @@ Adafruit_NeoPixel matrix(NUM_PINS, LED_PIN, NEO_GRB + NEO_KHZ800);
 void updateDayTimeLightsColor(){
 
 }
+
+
 // Update the timers from what the website is giving us
 void updateTimerForNightLights(){ }
 

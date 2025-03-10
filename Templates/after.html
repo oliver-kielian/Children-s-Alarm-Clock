@@ -1,9 +1,8 @@
 <html>
 <head>
     <title>Lights</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <!-- https://stackoverflow.com/questions/29109789/how-can-i-get-my-website-to-automatically-adjust-to-fit-different-screensizes --> 
-    <link rel="stylesheet" href="/static/style.css">
+    <link href="/static/style.css" rel="stylesheet">
+    <h1>Welcome To Your Setup</h1>
 </head>
 <body>
     <form method="POST" action="/nightLight">
@@ -12,7 +11,7 @@
     </form>
     <form method="POST" action="/morningLight">   
         Morning Light Color: <input type="color" name="nightColor" required><br>
-        <input type="submit" value="TURN ON MORNING LIGHT"><br>
+        <input type="submit" value="TURN ON NIGHTLIGHT"><br>
     </form>
 
     <button id="bluetoothButton">Connect to Childrens Alarm Clock!</button>
@@ -20,11 +19,3 @@
     <script src="static/bluetoothScript.js"></script>
 </body>
 </html>
-{% extends 'base.html' %}
-{% block title %}
-    HOME
-{% endblock %} 
-{% block content %} 
-<form action="/" method="POST"></form>
-<h1><h1>Welcome To My Home Page Login To Continue</h1></h1>
-{% endblock %}

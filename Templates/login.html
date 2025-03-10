@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+    login
+{% endblock %} 
+{% block content %}
+{% if msg %}
+    <p class=msg><strong>Something Went Wrong Please Try Again :)</strong> {{ msg }}
+  {% endif %}
+<form action="/login" method="POST">
+    <h1>Log In:</h1>
+     <label for="username">username:  </label><input type ="text" name ="username" id="username">
+    <br>
+    <label for="password">Password: </label><input type="password" id="password" name="password">
+    <br>
+    <br>
+    <input type="submit" name="SUBMIT">
+    <br>
+    <br>
+    <p>Dont Have An account?</p>
+    <a id="center" href="/create">Click Here!</a>
+</form>
+{% endblock %}

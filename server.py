@@ -52,7 +52,6 @@ def turnOnNLight():
     color= request.form.get("morningColor", "#FFFFFF")
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
-    ser.write(f"{r},{g},{b}\n".encode())
     return f"Turing on Night Light as {color}"
     
 

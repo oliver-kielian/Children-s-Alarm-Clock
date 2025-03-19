@@ -4,7 +4,7 @@ from flask_sqlalchemy import *
 from flask_login import *
 from bleak import BleakClient
 from bleak import discover
-import serial.tools.list_ports
+
 """
 #https://stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
 """
@@ -12,22 +12,26 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "mycoolawesomekey"
 
 characteristic ='c4d6aa1d-e90b-42fa-977e-039e7b401994'
+# For now this will be hardcoded but using the scan we can grab the adress but just for now to make easier we hard code the arduinos adress
+address = "9F83D883-81AA-5450-5C2A-5F7A1C9B5E4A"
 '''
 ************************************
 This is Stuff for arduino
 '''
 # https://panamahitek.com/en/wireless-communication-between-arduino-and-python-using-ble/
 # Asynchronous function to scan for BLE devices
-# async def scan():
-#     # Use the discover function from the bleak library to scan for devices
-#     devices = await discover()
+async def scan():
+    # Use the discover function from the bleak library to scan for devices
+    devices = await discover()
 
-#     # Loop through the list of discovered devices
-#     for d in devices:
-#         if(d.name and "Arduino" in d.name):
-#             print(d)
-# loop = asyncio.get_event_loop()
-# loop.run_until_complete(scan())
+    # Loop through the list of discovered devices
+    for d in devices:
+        if(d.name and "Arduino" in d.name):
+            print(d)
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+loop.run_until_complete(scan())
+loop.close()
 
 '''
 ************************************
@@ -100,18 +104,28 @@ def index():
 
 @app.route('/morningLight', methods=['POST'])
 def turnOnMLight():
-    if request.method == "POST":
-        print("we got here!!!")
-        jsonData = request.get_json()
-        print(jsonData)
+    print("we got here!!!")
+    jsonData = request.get_json()
+    print(jsonData)
+
+    data = "M"
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(alreadyConnectedMessages(address=address, data=data))
+    loop.close()
     # color= request.form.get("morningColor", "#FFFFFF")
     # color= color.lstrip("#")
     # r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
     # ser.write(f"{r},{g},{b}\n".encode())
-    return render_template('index.html')
+    return " ", 200
 
 @app.route('/nightLight', methods=['POST'])
 def turnOnNLight():
+    data = "N"
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main(address=address, data=data))
+    loop.close()
     color= request.form.get("morningColor", "#FFFFFF")
     color= color.lstrip("#")
     r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
@@ -119,19 +133,28 @@ def turnOnNLight():
 
 @app.route('/nightAlarm', methods=['POST']) 
 def setNightAlarm():
+    data = "PM"
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main(address=address, data=data))
+    loop.close()
     data = request.get_json()
     time = data.get("time")
     return jsonify({"message": f"Alarm set to {time}"})
 
 @app.route('/morningAlarm', methods=['POST']) 
 def setMorningAlarm():
+    data = "AM"
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(alreadyConnectedMessages(address=address, data=data))
+    loop.close()
     data = request.get_json()
     time = data.get("time")
     return jsonify({"message": f"Alarm set to {time}"})
 
 @app.route('/bluetooth', methods=['POST'])
 def getBlutooth():
-    address = "9F83D883-81AA-5450-5C2A-5F7A1C9B5E4A"
     data = 'B'
     ''' https://stackoverflow.com/questions/61543406/asyncio-run-runtimeerror-event-loop-is-closed '''
     ## ALWAYS COME BACK TO THIS - if bluetooth is not working for some reason this is valid code now ##
@@ -142,12 +165,28 @@ def getBlutooth():
     return " ", 200
 
 async def main(address, data):
+    print("Main Has Been Called")
     client = BleakClient(address)
     try:
         await client.connect()
         await client.write_gatt_char(characteristic, data.encode('utf-8'))
     except Exception as e:
         print(e)
+    finally:
+        print("We have Disconnected From Client (main)")
+        await client.disconnect()
+
+async def alreadyConnectedMessages(address, data):
+    print("alreadyConnectedMessages has been called")
+    client = BleakClient(address)
+    try:
+        await client.connect()
+        await client.write_gatt_char(characteristic, data.encode('utf-8'))
+    except Exception as e:
+        print("ERROR: " + e)
+    finally:
+        print("We have Disconnected From Client (alreadyConnectedMessages)")
+        await client.disconnect()
 
 if __name__ == '__main__':
     # ssl_context=('cert.pem', 'key.pem')

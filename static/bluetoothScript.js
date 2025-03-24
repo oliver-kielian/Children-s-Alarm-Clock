@@ -1,8 +1,14 @@
 // Source for how to get bluetooth up and running for devices in general
 // ("https://medium.com/@kamresh485/exploring-the-web-bluetooth-api-use-cases-advantages-and-limitations-6f3f85946e44")
 
-const our_service = 'c4d6aa1d-e90b-42fa-977e-039e7b401994';
-const our_characteristic = 'c4d6aa1d-e90b-42fa-977e-039e7b401994';
+const our_service = '5f7325da-eca4-4d7d-ae15-7bd09b3d24f1';
+const our_characteristic = '034da838-0810-44cb-ad23-8caa8d5ce1fe';
+const morningColorButton = document.getElementById('morningLight');
+const selectedColorMorning = document.getElementById('morningColor');
+let sendColorIDMorning = "";
+
+let gattCharacteristic;
+
 
 document.getElementById("bluetoothButton").addEventListener("click", () => {
     const statusElement = document.getElementById('status');
@@ -14,37 +20,56 @@ document.getElementById("bluetoothButton").addEventListener("click", () => {
     })
     .then(device => {
         statusElement.textContent = 'Connecting to ' + device.name + '...';
-        fetch('/bluetooth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({})
-        }).then(response => {
-            console.log('POST to /bluetooth done:', response.status);
-        }).catch(error => {
-            console.error('Error posting to /bluetooth:', error);
-        });
         return device.gatt.connect();
     })
     .then(server => {
-        statusElement.textContent = 'Connected. Getting our Service...';
+        statusElement.textContent = 'Connected. Getting Arduino Service...';
+        // console.log(server.getPrimaryService(our_service))
         return server.getPrimaryService(our_service);
     })
     .then(service => {
+        statusElement.textContent = 'Getting Arduino Characteristic...';
+        // console.log(service.getCharacteristic(our_characteristic))
         return service.getCharacteristic(our_characteristic);
     })
     .then(characteristic => {
-        return characteristic.readValue();
-    })
-    .then(value => {
-        const output = value.getUint8(0);
-        statusElement.textContent = output;
+        statusElement.textContent = 'Sucessfully Connected to Arduino...';
+        gattCharacteristic = characteristic;
+        
     })
     .catch(error => {
         statusElement.textContent = 'Error: ' + error;
     });
 })
+
+
+// get id of color
+selectedColorMorning.addEventListener('input', function (){
+    const color = this.value;
+    console.log("Selected Color For Morning:", color);
+    sendColorIDMorning = color;
+});
+
+morningColorButton.addEventListener('click', function (){
+    if(!gattCharacteristic){
+        console.log("Please connect to device first");
+        return
+    }
+    const text = "M";
+    const encodedText = utf8Encode(text);
+    console.log(encodedText)
+    gattCharacteristic.writeValue(encodedText)
+    .then(() => {
+        console.log('Data sent successfully!');
+    })
+    .catch(error => {
+        console.error('Error sending data:', error);
+    });     
+});
+
+function utf8Encode(str) {
+    return new TextEncoder().encode(str);
+}
 
 
 // Disconnect from the device if we are not on the page

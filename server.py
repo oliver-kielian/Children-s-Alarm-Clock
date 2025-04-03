@@ -113,6 +113,11 @@ def colors():
 def account():
     return render_template('account.html')
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     # ssl_context=('cert.pem', 'key.pem')

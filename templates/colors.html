@@ -1,0 +1,27 @@
+{% extends 'navBar.html' %}
+{% block title %}
+    Colors
+{% endblock %} 
+{% block content %}
+
+<div class="color">
+    <div>
+        Night Light Color: <input id="nightColor" type="color" name="nightColor" required><br>
+        <button id="nightLight">TURN ON NIGHTLIGHT</button>
+        <script src="static/nightLightScript.js"></script>
+    </div>
+    <div class="colorCircle" id="nightColorCircle"></div>
+</div>
+
+<br>
+<br>
+<br>
+
+<div class="color">
+    <div>
+        Morning Light Color: <input id="morningColor" type="color" name="morningColor" required><br>
+        <button id="morningLight">TURN ON MORNINGLIGHT</button>
+    </div>
+    <div class="colorCircle" id="morningColorCircle"></div>
+</div>
+{% endblock %} 

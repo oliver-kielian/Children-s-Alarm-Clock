@@ -1,5 +1,6 @@
 const nightColorButton = document.getElementById('nightLight');
 const selectedColorNight = document.getElementById('nightColor');
+const nightColorCircle = document.getElementById('nightColorCircle')
 let sendColorIDNight = "";
 
 // get id of color
@@ -7,6 +8,7 @@ selectedColorNight.addEventListener('input', function (){
     const color = this.value;
     console.log("Selected Color For Night:", color);
     sendColorIDNight = color;
+    nightColorCircle.style.backgroundColor = color;
 });
 
 nightColorButton.addEventListener('click', function (){

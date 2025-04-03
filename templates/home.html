@@ -1,0 +1,13 @@
+{% extends 'navBar.html' %}
+{% block title %}
+    Home
+{% endblock %} 
+{% block content %}
+    <h1>WELCOME</h1>
+    <h1>Press the button below to connect to an alarm clock!</h1>
+    <div class="BLEButton">
+        <button id="bluetoothButton">Connect to Childrens Alarm Clock!</button>
+        <p id="status"></p>
+        <script src="static/bluetoothScript.js"></script>
+    </div>
+{% endblock %}

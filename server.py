@@ -62,12 +62,10 @@ def login():
             msg = " "
             return render_template('login.html', msg=msg)
 
-
-
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        return render_template("after.html")
+        return render_template("home.html")
     else:
         return render_template('index.html')
 
@@ -97,6 +95,23 @@ def setMorningAlarm():
     data = request.get_json()
     time = data.get("time")
     return jsonify({"message": f"Alarm set to {time}"})
+
+@app.route('/home', methods=['GET'])
+def home():
+    return render_template('home.html')
+
+
+@app.route('/lights', methods=['GET'])
+def lights():
+    return render_template('lights.html')
+
+@app.route('/colors', methods=['GET'])
+def colors():
+    return render_template('colors.html')
+
+@app.route('/account', methods=['GET'])
+def account():
+    return render_template('account.html')
 
 
 if __name__ == '__main__':

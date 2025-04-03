@@ -35,6 +35,7 @@ document.getElementById("bluetoothButton").addEventListener("click", () => {
     .then(characteristic => {
         statusElement.textContent = 'Sucessfully Connected to Arduino...';
         gattCharacteristic = characteristic;
+        window.location.href = "lights.html";
         
     })
     .catch(error => {
@@ -71,7 +72,7 @@ function utf8Encode(str) {
     return new TextEncoder().encode(str);
 }
 
-
+/*
 // Disconnect from the device if we are not on the page
 window.addEventListener('beforeunload', () =>{
     if(ourDevice && ourDevice.gatt.connected){
@@ -79,3 +80,4 @@ window.addEventListener('beforeunload', () =>{
         console.log("We have disconnected from arduino!");
     }
 });
+*/

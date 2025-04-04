@@ -102,7 +102,7 @@ void setup() {
 
   //matrix test for demo
   for (int i = 0; i < NUM_LEDS; i++) {
-  matrix.setPixelColor(i, matrix.Color(200, 50, 100));  // Red
+  matrix.setPixelColor(i, matrix.Color(0, 0, 0));
   }
   matrix.show(); 
   //end matrix test for demo

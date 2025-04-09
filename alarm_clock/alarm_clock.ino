@@ -15,7 +15,7 @@
 // NeoPixel matrix
 #define LED_PIN 6
 #define NUM_LEDS 64
-uint8_t ledBrightness = 50; // LED matrix brightness 0-255
+uint8_t ledBrightness = 100; // LED matrix brightness 0-255
 
 
 // LCD screen declaration
@@ -105,7 +105,7 @@ void setup() {
 
   //matrix test for demo
   for (int i = 0; i < NUM_LEDS; i++) {
-  matrix.setPixelColor(i, matrix.Color(100, 50, 0));
+  matrix.setPixelColor(i, matrix.Color(0, 100, 255));
   }
   matrix.show(); 
   //end matrix test for demo
@@ -214,9 +214,6 @@ void displayTime() {
 // This is a function we will use later to allow for us to read in the serial
 // then make changes to our lights based on what the serial tells us
 void updateNightLightsColor(){
-  // put your setup code here, to run once:
-  //https://projecthub.arduino.cc/ansh2919/serial-communication-between-python-and-arduino-663756
-
   //https://forum.arduino.cc/t/code-optimising-ws2812-led-matrix-arduino/1068713
   // put your main code here, to run repeatedly:
   if(Serial.available() > 0)

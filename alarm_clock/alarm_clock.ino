@@ -15,6 +15,8 @@
 // NeoPixel matrix
 #define LED_PIN 6
 #define NUM_LEDS 64
+uint8_t ledBrightness = 50; // LED matrix brightness 0-255
+
 
 // LCD screen declaration
 Adafruit_ILI9341 LCD = Adafruit_ILI9341(LCD_CS, LCD_DC, LCD_RST);
@@ -99,10 +101,11 @@ void setup() {
   //start matrix
   //https://projecthub.arduino.cc/ansh2919/serial-communication-between-python-and-arduino-663756
   matrix.begin();
+  matrix.setBrightness(ledBrightness); //set brightness to ledBrightness variable
 
   //matrix test for demo
   for (int i = 0; i < NUM_LEDS; i++) {
-  matrix.setPixelColor(i, matrix.Color(0, 0, 0));
+  matrix.setPixelColor(i, matrix.Color(100, 50, 0));
   }
   matrix.show(); 
   //end matrix test for demo

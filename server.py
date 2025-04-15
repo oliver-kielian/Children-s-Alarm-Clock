@@ -4,10 +4,7 @@ from flask_login import *
 """
 #https://stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
 """
-app = Flask(__name__)
-app.config["SECRET_KEY"] = "mycoolawesomekey"
-
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'mycoolawesomekey'
 db = SQLAlchemy(app)

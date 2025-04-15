@@ -16,6 +16,15 @@
 #define LED_PIN 6
 #define NUM_LEDS 64
 uint8_t ledBrightness = 100; // LED matrix brightness 0-255
+int morningAlarmTime = 0;
+int nightAlarmTime = 0;
+int windDownAlarmTime = 0;
+DateTime now;
+DateTime morningAlarm;
+DateTime nightLight;
+DateTime windDownTime;
+
+
 
 
 // LCD screen declaration
@@ -126,7 +135,7 @@ void setup() {
 
 
 void loop() {
-    unsigned long currentMillis = millis();
+  unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
     displayTime();
@@ -135,6 +144,7 @@ void loop() {
 
   switch (currentState){
     case NOTCONNECTED:
+      Serial.println("Are we in not connected?");
       // wait for a Bluetooth® Low Energy central
       // If the user is connected to the peripheral:
       if (central) {
@@ -146,20 +156,21 @@ void loop() {
       break;
     case CONNECTED:
       Serial.print("IN CONNECTED STATE ");
+      morningAlarm = 
       while(central.connected()){
         if (readCharacteristic.written()) {
-          String incomingMsg = String(readCharacteristic.value());
-          Serial.println(incomingMsg);
-          if (incomingMsg == "N") {
+          uint8_t incomingMsg = readCharacteristic.value();
+          Serial.println(char(incomingMsg));
+          if (String(char(incomingMsg)) == "N") {
+            Serial.println("We Have an incomming msg: " + String(char(incomingMsg)));
+          }
+          if (String(char(incomingMsg)) == "M") {
             Serial.println("We Have an incomming msg: " + incomingMsg);
           }
-          if (incomingMsg == "77") {
+          if (String(char(incomingMsg)) == "PM") {
             Serial.println("We Have an incomming msg: " + incomingMsg);
           }
-          if (incomingMsg == "PM") {
-            Serial.println("We Have an incomming msg: " + incomingMsg);
-          }
-          if (incomingMsg == "AM") {
+          if (String(char(incomingMsg)) == "AM") {
             Serial.println("We Have an incomming msg: " + incomingMsg);
           }
         }
@@ -197,7 +208,7 @@ void loop() {
 
 //display time on LCD screen
 void displayTime() {
-  DateTime now = rtc.now();
+  now = rtc.now();
   LCD.fillRect(40, 180, LCD.width(), 35, ILI9341_BLACK);
   LCD.setCursor(40, 180);
 

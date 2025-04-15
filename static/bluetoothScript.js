@@ -1,14 +1,24 @@
 // Source for how to get bluetooth up and running for devices in general
 // ("https://medium.com/@kamresh485/exploring-the-web-bluetooth-api-use-cases-advantages-and-limitations-6f3f85946e44")
 
-const our_service = '5f7325da-eca4-4d7d-ae15-7bd09b3d24f1';
-const our_characteristic = '034da838-0810-44cb-ad23-8caa8d5ce1fe';
-const morningColorButton = document.getElementById('morningLight');
-const selectedColorMorning = document.getElementById('morningColor');
-let sendColorIDMorning = "";
+import { morningAlarmFunction } from "/static/morningAlarmScript.js";
+import { morningLightFunction } from "/static/morningLightScript.js";
 
+import { nightAlarmFunction } from "/static/nightAlarmScript.js";
+import { nightLightFunction } from "/static/nightLightScript.js";
+
+let our_service;
+let our_characteristic;
 let gattCharacteristic;
 
+fetch('static/config.json')
+  .then(response => response.json())
+  .then(config => {
+    // console.log(config.OUR_SERVICE);
+    // console.log(config.OUR_CHARACTERISTIC);
+    our_service = config.OUR_SERVICE
+    our_characteristic = config.OUR_CHARACTERISTIC
+});
 
 document.getElementById("bluetoothButton").addEventListener("click", () => {
     const statusElement = document.getElementById('status');
@@ -34,43 +44,24 @@ document.getElementById("bluetoothButton").addEventListener("click", () => {
     })
     .then(characteristic => {
         statusElement.textContent = 'Sucessfully Connected to Arduino...';
-        gattCharacteristic = characteristic;
-        window.location.href = "lights.html";
+        console.log(characteristic);
         
+        // console.log(our_service)
+        // console.log(our_characteristic);
+        gattCharacteristic = characteristic;
+
+        morningLightFunction(gattCharacteristic);
+        morningAlarmFunction(gattCharacteristic);
+
+        nightLightFunction(gattCharacteristic);
+        nightAlarmFunction(gattCharacteristic);
+
+        console.log(gattCharacteristic);
     })
     .catch(error => {
         statusElement.textContent = 'Error: ' + error;
     });
 })
-
-
-// get id of color
-selectedColorMorning.addEventListener('input', function (){
-    const color = this.value;
-    console.log("Selected Color For Morning:", color);
-    sendColorIDMorning = color;
-});
-
-morningColorButton.addEventListener('click', function (){
-    if(!gattCharacteristic){
-        console.log("Please connect to device first");
-        return
-    }
-    const text = "M";
-    const encodedText = utf8Encode(text);
-    console.log(encodedText)
-    gattCharacteristic.writeValue(encodedText)
-    .then(() => {
-        console.log('Data sent successfully!');
-    })
-    .catch(error => {
-        console.error('Error sending data:', error);
-    });     
-});
-
-function utf8Encode(str) {
-    return new TextEncoder().encode(str);
-}
 
 /*
 // Disconnect from the device if we are not on the page

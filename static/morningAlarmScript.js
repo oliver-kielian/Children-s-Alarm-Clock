@@ -1,32 +1,47 @@
-document.getElementById("morningAlarmButton").addEventListener("click", async () => {
-    let timeValue = document.getElementById("morningAlarm").value;
+import { utf8Encode } from "/static/functions.js";
 
-    if (!timeValue) {
-        document.getElementById("morningAlarmResponse").innerText = "Please select a time.";
-        return;
-    }
+export function morningAlarmFunction(gattCharacteristic) {
+    document.getElementById("morningAlarmButton").addEventListener("click", async () => {
+        let timeValue = document.getElementById("morningAlarm").value;
+    
+        if (!timeValue) {
+            document.getElementById("morningAlarmResponse").innerText = "Please select a time.";
+            return;
+        }
+    
+        let [hours, minutes] = timeValue.split(":").map(Number);
+    
+        if(hours >= 12)
+        {
+            document.getElementById("morningAlarmResponse").innerText = "Please Select an AM time"
+            return;
+        }
+    
+        console.log(timeValue);
 
-    let [hours, minutes] = timeValue.split(":").map(Number);
+        if(!gattCharacteristic){
+            console.log("Please connect to device first");
+            return
+        }
+        const text = "AM";
+        const encodedText = utf8Encode(text);
+        const encodedTime = utf8Encode(timeValue);
 
-    if(hours >= 12)
-    {
-        document.getElementById("morningAlarmResponse").innerText = "Please Select an AM time"
-        return;
-    }
+        console.log(encodedText)
+        console.log(encodedTime)
+        const combinedValues = new Uint8Array(encodedText.length + encodedTime.length);
+        combinedValues.set(encodedText, 0);
+        combinedValues.set(encodedTime, encodedText.length);
+        console.log(combinedValues);
 
-    try {
-        let response = await fetch("/morningAlarm", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ time: timeValue })
-        });
 
-        let result = await response.json();
-        document.getElementById("morningAlarmResponse").innerText = result.message;
-    } catch (error) {
-        document.getElementById("morningAlarmResponse").innerText = "Error setting alarm.";
-        console.error("Fetch error:", error);
-    }
-});
+        gattCharacteristic.writeValue(combinedValues)
+        .then(() => {
+            console.log('Data Sent Successfully From Morning Alarm Script!');
+        })
+        .catch(error => {
+            console.error('Error Sending Data From Morning Alarm Script:', error);
+        });  
+    });
+}
+

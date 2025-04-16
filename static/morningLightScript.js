@@ -1,4 +1,4 @@
-import { utf8Encode } from "/static/functions";
+import { utf8Encode } from "/static/functions.js";
 
 export function morningLightFunction(gattCharacteristic){
     const morningColorButton = document.getElementById('morningLight');

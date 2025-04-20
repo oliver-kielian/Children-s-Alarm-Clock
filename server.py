@@ -97,14 +97,9 @@ def setMorningAlarm():
 def home():
     return render_template('home.html')
 
-
-@app.route('/lights', methods=['GET'])
-def lights():
-    return render_template('lights.html')
-
-@app.route('/colors', methods=['GET'])
+@app.route('/settings', methods=['GET'])
 def colors():
-    return render_template('colors.html')
+    return render_template('settings.html')
 
 @app.route('/account', methods=['GET'])
 def account():

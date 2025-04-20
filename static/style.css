@@ -1,3 +1,7 @@
+body {
+  font-family: 'Bubblegum Sans', sans-serif;
+}
+
 nav {
   width: 80%;
   max-width: 1200px; 
@@ -35,11 +39,10 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6, p {
-  border: 2px solid white; /* White border around headings */
   padding: 10px;
 }
 
-.color, .lights {
+.color, .light, .settings{
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -65,6 +68,7 @@ button, .btn {
   border-radius: 25px;
   cursor: pointer; 
   transition: background-color 0.3s ease, transform 0.2s ease; 
+  font-family: 'Bubblegum Sans', sans-serif;
 }
 
 button:hover, .btn:hover {

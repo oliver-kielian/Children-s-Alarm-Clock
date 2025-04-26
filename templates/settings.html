@@ -1,0 +1,59 @@
+{% extends 'navBar.html' %}
+{% block title %}
+    Settings
+{% endblock %} 
+{% block content %}
+
+<h2>Press the button below to connect to an alarm clock!</h2>
+<div class="BLEButton">
+    <button id="bluetoothButton">Connect to Childrens Alarm Clock!</button>
+    <p id="status"></p>
+</div>
+<div class="settings">
+<div class="colors">
+    <h1>Colors</h1>
+<div class="color">
+    <div>
+       <p> Night Light Color:</p> <input id="nightColor" type="color" name="nightColor" required><br><br>
+        <button id="nightLight">TURN ON NIGHTLIGHT</button>
+    </div>
+    <div class="colorCircle" id="nightColorCircle"></div>
+</div>
+
+<br>
+<br>
+<br>
+
+<div class="color">
+    <div>
+        <p>Morning Light Color: </p><input id="morningColor" type="color" name="morningColor" required ><br><br>
+        <button id="morningLight">TURN ON MORNINGLIGHT</button>
+    </div>
+    <div class="colorCircle" id="morningColorCircle"></div>
+</div>
+
+</div>
+<br>
+<br>
+<br>
+
+<div class="lights">
+    <h1>Lights</h1>
+<div class="light">
+    <input type="time" id="nightAlarm" min="12:00" max="23:59"><br>
+    <button id="nightAlarmButton">Set Night Light Alarm</button>
+    <p id="nightAlarmResponse"></p>
+</div>
+
+<div class="light">
+    <input type="time" id="morningAlarm" min="00:00" max="11:59"><br>
+    <button id="morningAlarmButton">Set Morning Light Alarm</button>
+    <p id="morningAlarmResponse"></p>
+</div>
+</div>
+</div>
+<script type="module" src="static/bluetoothScript.js"></script>
+<script src="static/config.js"></script>
+<script src="static/ColorCircles.js"></script>
+{% endblock %} 
+

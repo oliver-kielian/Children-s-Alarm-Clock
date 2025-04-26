@@ -12,3 +12,5 @@ nightPicker.addEventListener('input', function(){
     nightCircle.style.backgroundColor = nightPicker.value;
 });
 
+
+

@@ -6,3 +6,5 @@ const config = {
     GATT_CHARACTERISTIC_TRUE: "TRUE",
     GATT_CHARACTERISTIC_FASLE: "FALSE",
   };
+
+  

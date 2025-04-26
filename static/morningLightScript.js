@@ -16,16 +16,21 @@ export function morningLightFunction(gattCharacteristic){
     
     morningColorButton.addEventListener('click', function (){
         if(!gattCharacteristic){
-            console.log("Please connect to device first");
+            alert(
+                'Error Sending Data!!\n\n' 
+                + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
+                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            );
             return
         }
         const text = "M";
         const encodedText = utf8Encode(text);
-        const encodedColor = utf8Encode(selectedColorMorning);
+        const encodedColor = utf8Encode(sendColorIDMorning);
+        console.log(sendColorIDMorning);
         console.log(encodedColor);
         console.log(encodedText);
 
-        const combinedValues = new Uint8Array(encodedText.length, encodedColor.length);
+        const combinedValues = new Uint8Array(encodedText.length + encodedColor.length);
         combinedValues.set(encodedText, 0);
         combinedValues.set(encodedColor, encodedText.length);
         console.log(combinedValues);

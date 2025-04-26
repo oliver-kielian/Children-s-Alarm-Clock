@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import *
 from flask_login import *
-"""
-#https://stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
-"""
+
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'mycoolawesomekey'
@@ -68,18 +66,11 @@ def index():
 
 @app.route('/morningLight', methods=['POST'])
 def turnOnMLight():
-    # color= request.form.get("morningColor", "#FFFFFF")
-    # color= color.lstrip("#")
-    # r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
-    # ser.write(f"{r},{g},{b}\n".encode())
     return " ", 200
 
 @app.route('/nightLight', methods=['POST'])
 def turnOnNLight():
-    color= request.form.get("morningColor", "#FFFFFF")
-    color= color.lstrip("#")
-    r, g, b = (int(color[i:i+2], 16) for i in (0, 2, 4))
-    return f"Turing on Night Light as {color}"
+    return " ", 200
 
 @app.route('/nightAlarm', methods=['POST']) 
 def setNightAlarm():

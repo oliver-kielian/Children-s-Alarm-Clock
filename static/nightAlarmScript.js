@@ -12,26 +12,37 @@ export function nightAlarmFunction(gattCharacteristic) {
         let [hours, minutes] = timeValue.split(":").map(Number);
     
         if(hours < 12)
-            {
-                document.getElementById("nightAlarmResponse").innerText = "Please Select a PM time"
-                return;
-            }
+        {
+            document.getElementById("nightAlarmResponse").innerText = "Please Select a PM time"
+            return;
+        }
     
         console.log(timeValue)
         if(!gattCharacteristic){
-            console.log("Please connect to device first");
+            alert(
+                'Error Sending Data!!\n\n' 
+                + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
+                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            );
             return
         }
+
         const text = "PM";
         const encodedText = utf8Encode(text);
-        const encodedTime = utf8Encode(timeValue);
+        const encodedHours = utf8Encode(hours);
+        const encodedMinutes = utf8Encode(minutes);
 
-        console.log(encodedText)
-        console.log(encodedTime)
-        const combinedValues = new Uint8Array(encodedText.length + encodedTime.length);
+
+        console.log(encodedText);
+        console.log(encodedHours);
+        console.log(encodedMinutes);
+
+        const combinedValues = new Uint8Array(encodedText.length + encodedHours.length + encodedMinutes.length);
         combinedValues.set(encodedText, 0);
-        combinedValues.set(encodedTime, encodedText.length);
+        combinedValues.set(encodedHours, encodedText.length);
+        combinedValues.set(encodedMinutes, encodedHours.length + encodedText.length);
         console.log(combinedValues);
+
         gattCharacteristic.writeValue(combinedValues)
         .then(() => {
             console.log('Data Sent Successfully From Night Alarm Script!');

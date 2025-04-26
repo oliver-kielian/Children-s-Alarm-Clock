@@ -7,19 +7,9 @@ import { morningLightFunction } from "/static/morningLightScript.js";
 import { nightAlarmFunction } from "/static/nightAlarmScript.js";
 import { nightLightFunction } from "/static/nightLightScript.js";
 
-import { brightnessForLightsFunction } from "/static/brightnessForLights.js";
-import { sendBrightnessForLightsFunction } from "/static/brightnessForLights.js";
-brightnessForLightsFunction();
-
-
 let our_service;
 let our_characteristic;
 let gattCharacteristic;
-
-if(morningLightFunction(gattCharacteristic) || morningAlarmFunction(gattCharacteristic) || 
-    nightAlarmFunction(gattCharacteristic) || nightLightFunction(gattCharacteristic) ||  sendBrightnessForLightsFunction(gattCharacteristic));
-
-
 
 fetch('static/config.json')
   .then(response => response.json())
@@ -29,7 +19,6 @@ fetch('static/config.json')
     our_service = config.OUR_SERVICE
     our_characteristic = config.OUR_CHARACTERISTIC
 });
-
 
 document.getElementById("bluetoothButton").addEventListener("click", () => {
     const statusElement = document.getElementById('status');
@@ -66,8 +55,6 @@ document.getElementById("bluetoothButton").addEventListener("click", () => {
 
         nightLightFunction(gattCharacteristic);
         nightAlarmFunction(gattCharacteristic);
-        
-        sendBrightnessForLightsFunction(gattCharacteristic);
 
         console.log(gattCharacteristic);
     })

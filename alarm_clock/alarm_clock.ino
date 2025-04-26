@@ -1,3 +1,5 @@
+#include <Adafruit_NeoPixel.h>
+
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_GFX.h>
@@ -15,17 +17,17 @@
 // NeoPixel matrix
 #define LED_PIN 6
 #define NUM_LEDS 64
-uint8_t ledBrightness = 100; // LED matrix brightness 0-255
+uint8_t ledBrightness = 1; // LED matrix brightness 0-255
 int morningAlarmTime = 0;
 int nightAlarmTime = 0;
 int windDownAlarmTime = 0;
 DateTime now;
-DateTime morningAlarm;
-DateTime nightLight;
-DateTime windDownTime;
-
-
-
+String AM_Time_Hour;
+String AM_Time_Minute;
+String PM_Time_Hour;
+String PM_Time_Minute;
+String AM_Color;
+String PM_Color;
 
 // LCD screen declaration
 Adafruit_ILI9341 LCD = Adafruit_ILI9341(LCD_CS, LCD_DC, LCD_RST);
@@ -35,13 +37,12 @@ RTC_DS3231 rtc;
 Adafruit_NeoPixel matrix(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 // **** This is beginning bluetooth stuff *****
-// set the size of the incoming and outgoing strings. Max 512:
 const int characteristicSize = 128;
 // create service and characteristics:
 // This is our unique services and characteristic
 BLEService communicationService("5f7325da-eca4-4d7d-ae15-7bd09b3d24f1");
-BLEByteCharacteristic readCharacteristic("034da838-0810-44cb-ad23-8caa8d5ce1fe",
-    BLEWrite | BLERead | BLENotify | characteristicSize);
+BLECharacteristic readCharacteristic("034da838-0810-44cb-ad23-8caa8d5ce1fe",
+    BLEWrite | BLERead, characteristicSize);
 
 BLEDevice central;
 // ***** End of the bluetooth stuff ******
@@ -81,6 +82,7 @@ enum myState currentState = NOTCONNECTED;
 //timing stuff
 unsigned long previousMillis = 0;
 const long interval = 1000; // 1-second update for clock
+const long nightLightInterval = 
 
 
 void setup() {
@@ -109,14 +111,7 @@ void setup() {
 
   //start matrix
   //https://projecthub.arduino.cc/ansh2919/serial-communication-between-python-and-arduino-663756
-  matrix.begin();
-  matrix.setBrightness(ledBrightness); //set brightness to ledBrightness variable
-
-  //matrix test for demo
-  for (int i = 0; i < NUM_LEDS; i++) {
-  matrix.setPixelColor(i, matrix.Color(0, 100, 255));
-  }
-  matrix.show(); 
+  
   //end matrix test for demo
 
   // begin initialization
@@ -144,7 +139,7 @@ void loop() {
 
   switch (currentState){
     case NOTCONNECTED:
-      Serial.println("Are we in not connected?");
+      // Serial.println("Not connected");
       // wait for a Bluetooth® Low Energy central
       // If the user is connected to the peripheral:
       if (central) {
@@ -153,26 +148,50 @@ void loop() {
         digitalWrite(LED_BUILTIN, HIGH);
         currentState = CONNECTED;
       }
+      if(AM_Time_Hour == String(now.hour()) && AM_Time_Minute == String(now.minute())){
+        Serial.println("Our Time is good");
+        currentState = MORNINGALARM;
+      }
+      if(PM_Time_Hour == String(now.hour()) && PM_Time_Minute == String(now.minute())){
+        currentState = NIGHTALARM;
+      }
       break;
     case CONNECTED:
-      Serial.print("IN CONNECTED STATE ");
-      morningAlarm = 
+      Serial.println("IN CONNECTED STATE ");
       while(central.connected()){
         if (readCharacteristic.written()) {
-          uint8_t incomingMsg = readCharacteristic.value();
-          Serial.println(char(incomingMsg));
-          if (String(char(incomingMsg)) == "N") {
-            Serial.println("We Have an incomming msg: " + String(char(incomingMsg)));
+          // "https://stackoverflow.com/questions/73695079/noise-in-arduino-ble-data-reading"
+          int length = readCharacteristic.valueLength();
+          byte value[length + 1];
+          readCharacteristic.readValue(value, length);
+          value[length] = '\0';
+          // Serial.print("Characteristic event, written: ");
+          // Serial.println((char *) value);
+          if (String((char) value[0]) == "N") {
+            Serial.println("We Got A Message Of N Now Set Variables");
+            AM_Color = String((char*) value).substring(1);
+            // Serial.println(AM_Color);
           }
-          if (String(char(incomingMsg)) == "M") {
-            Serial.println("We Have an incomming msg: " + incomingMsg);
+          if (String((char) value[0]) == "M") {
+            Serial.println("We Got A Message Of M Now Set Variables");
+            PM_Color = String((char*) value).substring(1);
+            // Serial.println(PM_Color);
           }
-          if (String(char(incomingMsg)) == "PM") {
-            Serial.println("We Have an incomming msg: " + incomingMsg);
+          if (String((char) value[0]) == "P" && String((char) value[1]) == "M") {
+            Serial.println("We Got A Message Of PM Now Set Variables");
+            PM_Time_Hour = String((char*) value).substring(2,4);
+            PM_Time_Minute = String((char*) value).substring(4);
+            // Serial.println(PM_Time_Hour);
+            // Serial.println(PM_Time_Minute);
           }
-          if (String(char(incomingMsg)) == "AM") {
-            Serial.println("We Have an incomming msg: " + incomingMsg);
+          if (String((char) value[0]) == "A" && String((char) value[1]) == "M") {
+            Serial.println("We Got A Message Of AM Now Set Variables");
+            AM_Time_Hour = String((char*) value).substring(2,4);
+            AM_Time_Minute = String((char*) value).substring(4);
+            // Serial.println(AM_Time_Hour);
+            // Serial.println(AM_Time_Minute);
           }
+
         }
       }
       digitalWrite(LED_BUILTIN, LOW);
@@ -191,19 +210,26 @@ void loop() {
       digitalWrite(LED_BUILTIN, LOW);
       break;
     case NIGHTALARM:
-      Serial.print("We Are in the NightAlarm State");
-      digitalWrite(LED_BUILTIN, HIGH);
-      digitalWrite(LED_BUILTIN, LOW);
+      unsigned long currentMillis = millis();
+      if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;
+        displayTime();
+      }
+      matrix.begin();
+      matrix.setBrightness(255); //set brightness to ledBrightness variable
+
+      //matrix test for demo
+      for (int i = 0; i < NUM_LEDS; i++) {
+        matrix.setPixelColor(i, matrix.Color(0, 100, 255));
+      }
+      matrix.show();
       break;
     case MORNINGALARM:
-      Serial.print("We Are in the MorningAlarm State");
-      digitalWrite(LED_BUILTIN, HIGH);
-      digitalWrite(LED_BUILTIN, LOW);
+      // Serial.print("We Are in the MorningAlarm State"); 
       break;
     default:
       break;
   }
-
 }
 
 //display time on LCD screen

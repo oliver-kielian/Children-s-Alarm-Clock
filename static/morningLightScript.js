@@ -3,7 +3,6 @@ import { utf8Encode } from "/static/functions.js";
 export function morningLightFunction(gattCharacteristic){
     const morningColorButton = document.getElementById('morningLight');
     const selectedColorMorning = document.getElementById('morningColor');
-    const morningColorCircle = document.getElementById('morningColorCircle');
     let sendColorIDMorning = "";
 
 
@@ -11,7 +10,6 @@ export function morningLightFunction(gattCharacteristic){
         const color = this.value;
         console.log("Selected Color For Morning:", color);
         sendColorIDMorning = color;
-        morningColorCircle.style.backgroundColor = color
     });
     
     morningColorButton.addEventListener('click', function (){

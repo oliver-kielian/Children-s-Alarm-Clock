@@ -3,14 +3,12 @@ import { utf8Encode } from "/static/functions.js";
 export function nightLightFunction(gattCharacteristic) {
     const nightColorButton = document.getElementById('nightLight');
     const selectedColorNight = document.getElementById('nightColor');
-    const nightColorCircle = document.getElementById('nightColorCircle')
     let sendColorIDNight = "";
 
     selectedColorNight.addEventListener('input', function (){
         const color = this.value;
         console.log("Selected Color For Night:", color);
         sendColorIDNight = color;
-        nightColorCircle.style.backgroundColor = color;
     });
 
     nightColorButton.addEventListener('click', function (){

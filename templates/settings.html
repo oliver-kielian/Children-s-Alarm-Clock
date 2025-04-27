@@ -11,7 +11,10 @@
 </div>
 <div class="settings">
 <div class="colors">
+    <div class="title">
     <h1>Colors</h1>
+    <div class="question" id="colorQuestion">?</div>
+</div>
 <div class="color">
     <div>
        <p> Night Light Color:</p> <input id="nightColor" type="color" name="nightColor" required><br><br>
@@ -38,7 +41,10 @@
 <br>
 
 <div class="lights">
+    <div class="title">
     <h1>Lights</h1>
+    <div class="question" id="lightQuestion">?</div>
+</div>
 <div class="light">
     <input type="time" id="nightAlarm" min="12:00" max="23:59"><br>
     <button id="nightAlarmButton">Set Night Light Alarm</button>
@@ -55,5 +61,6 @@
 <script type="module" src="static/bluetoothScript.js"></script>
 <script src="static/config.js"></script>
 <script src="static/ColorCircles.js"></script>
+<script src="static/questionScript.js"></script>
 {% endblock %} 
 

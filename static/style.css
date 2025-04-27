@@ -50,7 +50,7 @@ h1, h2, h3, h4, h5, h6, p {
   color: #333333;
 }
 
-.color, .light, .settings {
+.color, .light, .settings, .title {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -65,6 +65,20 @@ h1, h2, h3, h4, h5, h6, p {
   border-radius: 50%;
   background-color: #FFE0FB;
   border: 6px dotted #FF6FD8;
+}
+
+.question {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #FFE0FB;
+  border: 6px dotted #FF6FD8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px; /* Big question mark */
+  color: #C2185B;  /* Make the ? stand out */
+  font-weight: bold;
 }
 
 button, .btn {

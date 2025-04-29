@@ -1,10 +1,4 @@
 const config = {
-    // Just an exmaple
-    // API_URL: 'https://api.example.com',
     OUR_SERVICE: '5f7325da-eca4-4d7d-ae15-7bd09b3d24f1',
     OUR_CHARACTERISTIC: '034da838-0810-44cb-ad23-8caa8d5ce1fe',
-    GATT_CHARACTERISTIC_TRUE: "TRUE",
-    GATT_CHARACTERISTIC_FASLE: "FALSE",
   };
-
-  

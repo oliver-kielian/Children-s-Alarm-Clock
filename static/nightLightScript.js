@@ -13,16 +13,22 @@ export function nightLightFunction(gattCharacteristic) {
 
     nightColorButton.addEventListener('click', function (){
         if(!gattCharacteristic){
-            console.log("Please connect to device first");
+            alert(
+                'Error Sending Data!!\n\n' 
+                + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
+                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            );
             return
         }
         const text = "N";
         const encodedText = utf8Encode(text);
-        const encodedColor = utf8Encode(selectedColorNight);
-        console.log(encodedColor);
+        const encodedColor = utf8Encode(sendColorIDNight);
+        console.log(sendColorIDNight);
         console.log(encodedText);
+        console.log(encodedColor);
+        
 
-        const combinedValues = new Uint8Array(encodedText.length, encodedColor.length);
+        const combinedValues = new Uint8Array(encodedText.length + encodedColor.length);
         combinedValues.set(encodedText, 0);
         combinedValues.set(encodedColor, encodedText.length);
         console.log(combinedValues);

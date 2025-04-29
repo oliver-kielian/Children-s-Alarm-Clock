@@ -16,22 +16,37 @@ export function morningAlarmFunction(gattCharacteristic) {
             document.getElementById("morningAlarmResponse").innerText = "Please Select an AM time"
             return;
         }
-    
-        console.log(timeValue);
+
 
         if(!gattCharacteristic){
-            console.log("Please connect to device first");
+            alert(
+                'Error Sending Data!!\n\n' 
+                + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
+                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            );
             return
         }
+        if(hours < 10){
+            hours = "0" + hours
+        }
+        console.log(hours)
         const text = "AM";
         const encodedText = utf8Encode(text);
-        const encodedTime = utf8Encode(timeValue);
+        const encodedHours = utf8Encode(hours);
+        const encodedMinutes = utf8Encode(minutes);
 
-        console.log(encodedText)
-        console.log(encodedTime)
-        const combinedValues = new Uint8Array(encodedText.length + encodedTime.length);
+        console.log(encodedText);
+        console.log(encodedHours);
+        console.log(encodedMinutes);
+
+        const combinedValues = new Uint8Array(encodedText.length + encodedHours.length + encodedMinutes.length);
+        // console.log(combinedValues.length)
+
         combinedValues.set(encodedText, 0);
-        combinedValues.set(encodedTime, encodedText.length);
+        // console.log(combinedValues);
+        combinedValues.set(encodedHours, encodedText.length);
+        // console.log(combinedValues);
+        combinedValues.set(encodedMinutes, encodedHours.length + encodedText.length);
         console.log(combinedValues);
 
 

@@ -19,11 +19,11 @@ export function morningAlarmFunction(gattCharacteristic) {
 
 
         if(!gattCharacteristic){
-            alert(
-                'Error Sending Data!!\n\n' 
-                + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
-                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
-            );
+            // alert(
+            //     'Error Sending Data!!\n\n' 
+            //     + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
+            //     + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            // );
             return
         }
         if(hours < 10){
@@ -53,6 +53,11 @@ export function morningAlarmFunction(gattCharacteristic) {
         gattCharacteristic.writeValue(combinedValues)
         .then(() => {
             console.log('Data Sent Successfully From Morning Alarm Script!');
+            alert(
+                'Data sent successfully Morning Alarm!!!\n\n' 
+                + "\t• It worked!\n" 
+                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            );
         })
         .catch(error => {
             console.error('Error Sending Data From Morning Alarm Script:', error);

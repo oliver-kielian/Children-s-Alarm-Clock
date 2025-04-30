@@ -335,7 +335,6 @@ void snorLaxFace(){
   
   LCD.fillRect(x0, y0, rectW, rectH, CREAM);
   LCD.drawRect(x0, y0, rectW, rectH, OUTLINE);
-
   const int notchHalf = 55;
   const int notchDepth = 50;
 
@@ -349,6 +348,8 @@ void snorLaxFace(){
                   notchRightX, notchBaseY,
                   notchApexX,  notchApexY,
                   BG);
+
+  
 
   LCD.drawTriangle(notchLeftX,  notchBaseY,
                   notchRightX, notchBaseY,

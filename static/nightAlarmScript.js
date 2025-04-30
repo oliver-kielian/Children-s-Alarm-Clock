@@ -19,11 +19,11 @@ export function nightAlarmFunction(gattCharacteristic) {
     
         console.log(timeValue)
         if(!gattCharacteristic){
-            alert(
-                'Error Sending Data!!\n\n' 
-                + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
-                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
-            );
+            // alert(
+            //     'Error Sending Data!!\n\n' 
+            //     + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
+            //     + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            // );
             return
         }
 
@@ -46,6 +46,10 @@ export function nightAlarmFunction(gattCharacteristic) {
         gattCharacteristic.writeValue(combinedValues)
         .then(() => {
             console.log('Data Sent Successfully From Night Alarm Script!');
+            alert(
+                'Data sent successfully Night Alarm!!!\n\n' 
+                + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
+            );
         })
         .catch(error => {
             console.error('Error Sending Data From Night Alarm Script:', error);

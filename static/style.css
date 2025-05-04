@@ -54,10 +54,17 @@ h1, h2, h3, h4, h5, h6, p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 30px;
   margin: 30px;
-  padding: 15px;
-  justify-content: center;
+}
+
+.header, .error{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.errorMessage{
+  color: red;
 }
 
 .colorCircle {
@@ -236,4 +243,5 @@ button[type="submit"]:hover {
   font-size: 26px;    
   width: 50px;
   text-align: center;
+}
 }

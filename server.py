@@ -63,40 +63,49 @@ def index():
         return render_template("home.html")
     else:
         return render_template('index.html')
+    
 
 @app.route('/morningLight', methods=['POST'])
+@login_required
 def turnOnMLight():
     return " ", 200
 
 @app.route('/nightLight', methods=['POST'])
+@login_required
 def turnOnNLight():
     return " ", 200
 
 @app.route('/nightAlarm', methods=['POST']) 
+@login_required
 def setNightAlarm():
     data = request.get_json()
     time = data.get("time")
     return jsonify({"message": f"Alarm set to {time}"})
 
 @app.route('/morningAlarm', methods=['POST']) 
+@login_required
 def setMorningAlarm():
     data = request.get_json()
     time = data.get("time")
     return jsonify({"message": f"Alarm set to {time}"})
 
 @app.route('/home', methods=['GET'])
+@login_required
 def home():
     return render_template('home.html')
 
 @app.route('/settings', methods=['GET'])
+@login_required
 def colors():
     return render_template('settings.html')
 
 @app.route('/account', methods=['GET'])
+@login_required
 def account():
     return render_template('account.html')
 
 @app.route('/logout', methods=['POST'])
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))

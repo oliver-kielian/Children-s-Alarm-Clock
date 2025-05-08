@@ -29,6 +29,10 @@ fetch('static/config.json')
     our_characteristic = config.OUR_CHARACTERISTIC
 });
 
+document.getElementById("saveSettingsButton").addEventListener("click", () =>{
+    location.reload();
+});
+
 
 document.getElementById("bluetoothButton").addEventListener("click", () => {
     const statusElement = document.getElementById('status');

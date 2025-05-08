@@ -9,16 +9,15 @@ import { nightLightFunction } from "/static/nightLightScript.js";
 
 import { brightnessForLightsFunction } from "/static/brightnessForLights.js";
 import { sendBrightnessForLightsFunction } from "/static/brightnessForLights.js";
+
+import { manualLightFunction } from "/static/manualLightScript.js";
+
 brightnessForLightsFunction();
 
 
 let our_service;
 let our_characteristic;
 let gattCharacteristic;
-
-if(morningLightFunction(gattCharacteristic) || morningAlarmFunction(gattCharacteristic) || 
-    nightAlarmFunction(gattCharacteristic) || nightLightFunction(gattCharacteristic) ||  sendBrightnessForLightsFunction(gattCharacteristic));
-
 
 
 fetch('static/config.json')
@@ -68,6 +67,8 @@ document.getElementById("bluetoothButton").addEventListener("click", () => {
         nightAlarmFunction(gattCharacteristic);
         
         sendBrightnessForLightsFunction(gattCharacteristic);
+
+        manualLightFunction(gattCharacteristic);
 
         console.log(gattCharacteristic);
     })

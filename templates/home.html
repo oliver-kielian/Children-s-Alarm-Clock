@@ -10,6 +10,15 @@
     <div class="colorCircle" id="nightColorCircle"></div>
     <p>Night color at time</p>
     <div class="colorCircle" id="morningColorCircle"></div>
+    
     <p>Morning Color at time</p>
+    <script>
+        fetch('/colors')
+        .then(response => response.ok ? response.json(): {})
+        .then(ourColors =>{
+            document.getElementById('morningColorCircle').style.backgroundColor = ourColors.morning;
+            document.getElementById('nightColorCircle').style.backgroundColor = ourColors.night;
+        })
+    </script>
 {% endblock %}
 

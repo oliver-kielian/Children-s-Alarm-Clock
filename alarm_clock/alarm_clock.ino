@@ -2,8 +2,7 @@
 
 #include <Wire.h>
 #include <SPI.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_ILI9341.h>
+#include <Arduino_GFX_Library.h>
 #include <RTClib.h>
 #include <ArduinoBLE.h>
 #include <Adafruit_NeoPixel.h>
@@ -17,12 +16,15 @@
 // NeoPixel matrix
 #define LED_PIN 6
 #define NUM_LEDS 64
-uint8_t ledBrightness = 255; // LED matrix brightness 0-255
+uint8_t ledBrightness = 0; // LED matrix brightness 0-255
 int morningAlarmTime = 0;
 int nightAlarmTime = 0;
 int windDownAlarmTime = 0;
 char charbufAM[7];
 char charbufPM[7];
+char charbufMAN[7];
+bool manualLight;
+bool manualMode = true;
 
 long int rbg_NightTime;
 long int rbg_MorningTime;
@@ -34,10 +36,12 @@ String PM_Time_Hour;
 String PM_Time_Minute;
 String AM_Color;
 String PM_Color;
+String MANUAL_Color;
 
 
 // LCD screen declaration
-Adafruit_ILI9341 LCD = Adafruit_ILI9341(LCD_CS, LCD_DC, LCD_RST);
+Arduino_HWSPI bus(LCD_DC, LCD_CS);
+Arduino_ILI9341 LCD(&bus, LCD_RST);
 // RTC module declaration
 RTC_DS3231 rtc;
 // Light matrix declaratoin
@@ -55,30 +59,13 @@ BLEDevice central;
 // ***** End of the bluetooth stuff ******
 
 
-// This is our states for our arduino look at state diagram for more clarification
-// TODO: FIX STATES NEEDS MORE CLARIFICATION
+// This is our states for our arduino
 enum myState {
-  // We are not connected to a central
-  // our base 
-  // we have our times for the morning light/ night light/ wind down light
-  // if time == 7:00 am
-  // go to morning light state
-  // if time == 7:00 pm 
-  // go to wind down light
-  // if time == 7:30 pm
-  // night light state
   NOTCONNECTED,
-  // We are connected to the central
-  // if msg == B 
-  // currentState == CONNECTED
   CONNECTED,
-  // Where should we be if we arent trying to connect but at any moment we want to connnect
-  // gather information
-  // Depending on what message is sent change parameters for alarms and lights and such
-  // if we get dissconnect msg 
-  // currentState == NOTCONNECTED
   NIGHTLIGHT,
   MORNINGLIGHT,
+  MANUALMODE,
 };
 enum myState currentState = NOTCONNECTED;
 
@@ -100,7 +87,7 @@ void setup() {
   // Initialize LCD
   LCD.begin();
   LCD.setRotation(1);
-  LCD.setTextColor(ILI9341_BLACK);
+  LCD.setTextColor(BLACK);
   snorLaxFace();
   matrix.begin();
 
@@ -129,12 +116,20 @@ void setup() {
 
 
 void loop() {
+  BLE.poll();
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
     displayTime();
   }
   central = BLE.central();
+
+  if (central && central.connected() && currentState != CONNECTED) {
+    Serial.print("Connected: "); 
+    Serial.println(central.address());
+    digitalWrite(LED_BUILTIN, HIGH);
+    currentState = CONNECTED;
+  }
 
   switch (currentState){
     case NOTCONNECTED:
@@ -154,10 +149,12 @@ void loop() {
         Serial.println("Connected to NIGHTLIGHT: ");
         currentState = NIGHTLIGHT;
       }
+      if(manualLight == true){
+        currentState = MANUALMODE; 
+      }
       break;
     case CONNECTED:
-      Serial.println("IN CONNECTED STATE ");
-      while(central.connected()){
+      if(central.connected()){
         if (readCharacteristic.written()) {
           // "https://stackoverflow.com/questions/73695079/noise-in-arduino-ble-data-reading"
           int length = readCharacteristic.valueLength();
@@ -169,7 +166,7 @@ void loop() {
           if (String((char) value[0]) == "N") {
             Serial.println("We Got A Message Of N Now Set Variables");
             PM_Color = String((char*) value).substring(2);
-            Serial.println(PM_Color);
+            // Serial.println(PM_Color);
           }
           if (String((char) value[0]) == "M") {
             Serial.println("We Got A Message Of M Now Set Variables");
@@ -180,8 +177,8 @@ void loop() {
             Serial.println("We Got A Message Of PM Now Set Variables");
             PM_Time_Hour = String((char*) value).substring(2,4);
             PM_Time_Minute = String((char*) value).substring(4);
-            Serial.println(PM_Time_Hour);
-            Serial.println(PM_Time_Minute);
+            // Serial.println(PM_Time_Hour);
+            // Serial.println(PM_Time_Minute);
           }
           if (String((char) value[0]) == "A" && String((char) value[1]) == "M") {
             Serial.println("We Got A Message Of AM Now Set Variables");
@@ -190,20 +187,42 @@ void loop() {
             // Serial.println(AM_Time_Hour);
             // Serial.println(AM_Time_Minute);
           }
-
+          if(String((char) value[0]) == "L" && String((char) value[1]) == "O"){
+            MANUAL_Color = String((char*) value).substring(3);
+            Serial.println(MANUAL_Color);
+            manualLight = true;
+          }
+          if(String((char) value[0]) == "L" && String((char) value[1]) == "F"){
+            manualLight = false;
+          }
+          if (String((char) value[0]) == "B") {
+            Serial.println("We Got A Message Of B Now Set Variables");
+            if(String((char) value[2]) == NULL){
+              ledBrightness = String((char*) value).substring(1).toInt();
+              Serial.println("TOP");
+              Serial.println(ledBrightness);
+            }else{
+              ledBrightness = String((char*) value).substring(1).toInt();
+              Serial.println("BOTTOM");
+              Serial.println(ledBrightness);
+            }
+          }
         }
+      }else{
+        digitalWrite(LED_BUILTIN, LOW);
+        Serial.println("Disconnected from central: ");
+        Serial.println(central.address());
+        BLE.advertise();
+        central = BLEDevice();
+        currentState = NOTCONNECTED;
       }
-      digitalWrite(LED_BUILTIN, LOW);
-      Serial.println("Disconnected from central: ");
-      Serial.println(central.address());
-      currentState = NOTCONNECTED;
       break;
     case NIGHTLIGHT:{
         if (nightStart == 0) {
           nightStart = millis();
           nightLightDone = false;
-          if(ledBrightness == NULL){
-            ledBrightness = 255;
+          if(ledBrightness == 0){
+            ledBrightness = 60;
           }
           Serial.println(PM_Color);
           PM_Color.toCharArray(charbufPM,7);
@@ -223,14 +242,14 @@ void loop() {
           }
           matrix.show();
           Serial.println("Here 1");
-          delay(500);
+          // delay(500);
           for (int i = 0; i < NUM_LEDS; i++) {
             matrix.setBrightness(ledBrightness/2);
             matrix.setPixelColor(i, matrix.Color(r, g, b));
           }
           matrix.show();
           Serial.println("Here 2");
-          delay(500);
+          // delay(500);
           for (int i = 0; i < NUM_LEDS; i++) {
             matrix.setBrightness(ledBrightness);
             matrix.setPixelColor(i, matrix.Color(r, g, b));
@@ -238,6 +257,7 @@ void loop() {
           Serial.println("Here Last");
           matrix.show();
         }
+
         if(!nightLightDone && millis() - nightStart >= 300000UL){
           nightLightDone = true;
           matrix.setBrightness(ledBrightness / 2);
@@ -247,15 +267,18 @@ void loop() {
         if(AM_Time_Hour == String(now.hour()) && AM_Time_Minute == String(now.minute())){
           currentState = MORNINGLIGHT;
           nightStart = 0;
-        }   
+        } 
+        if(manualLight == true){
+          currentState = MANUALMODE;
+        }  
       }
       break;
     case MORNINGLIGHT:{
       if (morningStart == 0) {
           morningStart = millis();
           morningLightDone = false;
-          if(ledBrightness == NULL){
-            ledBrightness = 255;
+          if(ledBrightness == 0){
+            ledBrightness = 60;
           }
           AM_Color.toCharArray(charbufAM,7);
           rbg_MorningTime = strtoul(charbufAM,0,16);
@@ -274,7 +297,38 @@ void loop() {
           morningLightDone = true;
           currentState = NOTCONNECTED; 
         }
+        if(manualLight == true){
+          currentState = MANUALMODE;
+        }
       }
+      break;
+    case MANUALMODE:{
+        if(ledBrightness == 0){
+          ledBrightness = 60;
+        }
+        if(manualMode){
+          manualMode = false;
+          MANUAL_Color.toCharArray(charbufMAN,7);
+          rbg_MorningTime = strtoul(charbufMAN,0,16);
+          // Serial.print("We Are in the NightLigth State");
+          byte r =(byte)(rbg_MorningTime>>16);
+          byte g =(byte)(rbg_MorningTime>>8);
+          byte b =(byte)(rbg_MorningTime);
+
+          for (int i = 0; i < NUM_LEDS; i++) {
+            matrix.setBrightness(ledBrightness);
+            matrix.setPixelColor(i, matrix.Color(r, g, b));
+          }
+          matrix.show();
+        }
+  
+        if(manualLight == false){
+          currentState = NOTCONNECTED;
+          manualMode = true;
+          matrix.clear();
+          matrix.show();
+        }
+      } 
       break;
     default:
       break;
@@ -283,10 +337,9 @@ void loop() {
 
 void displayTime() {
   now = rtc.now();
-  uint16_t CREAM = LCD.color565(255,238,185);
-  LCD.setCursor(60, 200);
+  LCD.setCursor(80, 200);
   LCD.setTextSize(4);
-  LCD.setTextColor(ILI9341_BLACK, CREAM);
+  LCD.setTextColor(BLACK, WHITE);
 
   if (now.hour() < 10) LCD.print("0");
   LCD.print(now.hour()); LCD.print(":");
@@ -296,71 +349,16 @@ void displayTime() {
   LCD.print(now.second());
 }
 
-// ******* TODO: FIX THIS FUNCTION SO WE CAN USE LATER IN OUR STATES *******
-// This is a function we will use later to allow for us to read in the serial
-// then make changes to our lights based on what the serial tells us
-// void updateNightLightsColor(){
-//   //https://forum.arduino.cc/t/code-optimising-ws2812-led-matrix-arduino/1068713
-//   // put your main code here, to run repeatedly:
-//   if(Serial.available() > 0)
-//   {
-//     int r, g, b;
-//     String data = Serial.readStringUntil('\n');
-
-//     if(sscanf(data.c_str(), "%d,%d,%d", &r, &g, &b) == 3){
-//       digitalWrite(LED_BUILTIN, HIGH);
-//       for (int i = 0; i < NUM_LEDS; i++) {
-//         matrix.setPixelColor(i, matrix.Color(r, g, b));
-//       }
-//       matrix.show();
-//     }
-//   }
-// }
-
-
 void snorLaxFace(){
-  uint16_t BG = LCD.color565( 30, 92, 96 );
-  uint16_t CREAM = LCD.color565(255,238,185);
-  uint16_t OUTLINE = ILI9341_BLACK; 
-  LCD.fillScreen(BG);
+  LCD.fillScreen(WHITE);
+  LCD.fillArc(85, 100, 60, 40, 210, 330, BLACK);
+  LCD.fillArc(235, 100, 60, 40, 210, 330, BLACK);
 
-  const int cx = 160;
-  const int cy = 120;
-  const int rectW = 300;
-  const int rectH = 200;
+  LCD.drawTriangle(140, 130, 110, 150, 130, 170, BLACK);
 
-  int x0 = cx - rectW / 2;
-  int y0 = cy - rectH / 2;
+  LCD.drawTriangle(195, 130, 205, 170, 225, 150, BLACK);
 
-  
-  LCD.fillRect(x0, y0, rectW, rectH, CREAM);
-  LCD.drawRect(x0, y0, rectW, rectH, OUTLINE);
-  const int notchHalf = 55;
-  const int notchDepth = 50;
-
-  int notchLeftX = cx - notchHalf;
-  int notchRightX = cx + notchHalf;
-  int notchBaseY = y0;
-  int notchApexX = cx;
-  int notchApexY = y0 + notchDepth;
-
-  LCD.fillTriangle(notchLeftX,  notchBaseY,
-                  notchRightX, notchBaseY,
-                  notchApexX,  notchApexY,
-                  BG);
-
-  
-
-  LCD.drawTriangle(notchLeftX,  notchBaseY,
-                  notchRightX, notchBaseY,
-                  notchApexX,  notchApexY,
-                  BG);
-  
-  LCD.fillRect(30, 80, 80, 25, OUTLINE);
-  LCD.fillRect(190, 80, 80, 25, OUTLINE);
-  const int mouthW = 150;
-  const int mouthH = 25;
-  int x10 = 160 - mouthW / 2;
-  int y10 = 120 - mouthH / 2;
-  LCD.fillRect(x10, y10 + 45, mouthW, mouthH, OUTLINE);
+  LCD.fillArc(170, 100, 80, 60, 30, 150, BLACK);
 }
+
+

@@ -13,11 +13,6 @@ export function nightLightFunction(gattCharacteristic) {
 
     nightColorButton.addEventListener('click', function (){
         if(!gattCharacteristic){
-            // alert(
-            //     'Error Sending Data!!\n\n' 
-            //     + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
-            //     + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
-            // );
             return
         }
         const text = "N";
@@ -41,6 +36,11 @@ export function nightLightFunction(gattCharacteristic) {
                 'Data sent successfully Night Light!!!\n\n' 
                 + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
             );
+            fetch('/colors', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({slot: 'night', color: sendColorIDNight})
+            });
         })
         .catch(error => {
             console.error('Error sending data:', error);

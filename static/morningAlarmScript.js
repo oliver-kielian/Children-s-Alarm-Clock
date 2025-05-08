@@ -19,11 +19,6 @@ export function morningAlarmFunction(gattCharacteristic) {
 
 
         if(!gattCharacteristic){
-            // alert(
-            //     'Error Sending Data!!\n\n' 
-            //     + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
-            //     + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
-            // );
             return
         }
         if(hours < 10){

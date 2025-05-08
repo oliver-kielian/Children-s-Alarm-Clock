@@ -19,11 +19,6 @@ export function nightAlarmFunction(gattCharacteristic) {
     
         console.log(timeValue)
         if(!gattCharacteristic){
-            // alert(
-            //     'Error Sending Data!!\n\n' 
-            //     + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
-            //     + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
-            // );
             return
         }
 

@@ -12,6 +12,13 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(40), unique=True, nullable=False)
     username = db.Column(db.String(40), nullable=False)
     password = db.Column(db.String(40), nullable=False)
+    colors = db.relationship('Colors', backref='user')
+
+class Colors(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    slot = db.Column(db.String(40), nullable=False)
+    hexColor = db.Column(db.String(40), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 login_manager = LoginManager(app)
@@ -60,7 +67,8 @@ def login():
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        return render_template("home.html")
+        color = Colors.query.all()
+        return render_template("home.html", color=color)
     else:
         return render_template('index.html')
     
@@ -92,7 +100,8 @@ def setMorningAlarm():
 @app.route('/home', methods=['GET'])
 @login_required
 def home():
-    return render_template('home.html')
+    colors = Colors.query.all()
+    return render_template('home.html', colors=colors)
 
 @app.route('/settings', methods=['GET'])
 @login_required
@@ -110,9 +119,29 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/colors', methods=['GET', 'POST'])
+@login_required
+def ourColors():
+    if request.method == 'POST':
+        dataColors = request.get_json() or {}
+        slot = dataColors.get('slot')
+        color = dataColors.get('color')
+
+        if(not slot or not color):
+            return " ", 400
+
+        row = Colors.query.filter_by(user_id=current_user.id, slot=slot).first()
+        if(row):
+            row.hexColor = color
+        else:
+            row = Colors(slot=slot, hexColor=color, user=current_user)
+            db.session.add(row)
+        db.session.commit()
+        return " ", 200
+    return jsonify({color.slot: color.hexColor for color in current_user.colors}), 200
+
 
 if __name__ == '__main__':
-    # ssl_context=('cert.pem', 'key.pem')
      app.run(debug=True)
 
      

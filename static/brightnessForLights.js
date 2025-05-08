@@ -1,6 +1,7 @@
 import { utf8Encode } from "/static/functions.js";
 const sliderEl = document.querySelector("#range");
 const sliderValue = document.querySelector(".value");
+var value = 0;
 
 
 export function brightnessForLightsFunction() {
@@ -9,10 +10,11 @@ export function brightnessForLightsFunction() {
     
     sliderValue.textContent = tempSliderValue;
     
-    const progress = (tempSliderValue / sliderEl.max) * 100;
-    
+    const progress = tempSliderValue;
+    value = progress;
     sliderEl.style.background = `linear-gradient(to right, #f50 ${progress}%, #ccc ${progress}%)`;
     })
+    
 }
 
 export function sendBrightnessForLightsFunction(gattCharacteristic) {
@@ -20,18 +22,12 @@ export function sendBrightnessForLightsFunction(gattCharacteristic) {
 
     brightnessButton.addEventListener('click', function (){
         if(!gattCharacteristic){
-            // alert(
-            //     'Error Sending Data!!\n\n' 
-            //     + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
-            //     + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
-            // );
-            console.log("It worked")
             return
         }
-
+        
         const text = "B";
         const encodedText = utf8Encode(text);
-        const encodedSliderVal = utf8Encode(sliderValue);
+        const encodedSliderVal = utf8Encode(value);
         console.log(encodedText);
         console.log(encodedSliderVal);
         

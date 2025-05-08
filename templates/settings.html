@@ -33,7 +33,25 @@
     <div class="colorCircle" id="morningColorCircle"></div>
 </div>
 
+<br>
+<br>
+<br>
+
+
+<div class="color">
+    <div>
+        <p>Manual Light Color: </p><input id="manualColor" type="color" name="manualColor" required ><br><br>
+        <button id="manualLightON">SET MANUALLIGHT ON</button>
+        <button id="manualLightOFF">SET MANUALLIGHT OFF</button>
+    </div>
+    <div class="colorCircle" id="manualColorCircle"></div>
 </div>
+
+</div>
+
+<br>
+<br>
+<br>
 
 <div class="lights">
     <div class="header">
@@ -58,8 +76,9 @@
 </div><br>
 </div>
 
+
 <div class="range">
-    <input type="range" min="0" max="255" value="0" id="range" /> 
+    <input type="range" min="0" max="60" value="0" id="range" /> 
     <div class="value">0</div>
     <button id="submitBrightness">Set Brightness</button>
 <script type="module" src="static/bluetoothScript.js"></script>

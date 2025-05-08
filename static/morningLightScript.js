@@ -14,11 +14,6 @@ export function morningLightFunction(gattCharacteristic){
     
     morningColorButton.addEventListener('click', function (){
         if(!gattCharacteristic){
-            // alert(
-            //     'Error Sending Data!!\n\n' 
-            //     + "\t• Please Make Sure You Connect To Alarm Before Sending Data\n" 
-            //     + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
-            // );
             return
         }
         const text = "M";
@@ -40,6 +35,11 @@ export function morningLightFunction(gattCharacteristic){
                 'Data sent successfully Morning Light!!!\n\n' 
                 + '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n' 
             );
+            fetch('/colors', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({slot: 'morning', color: sendColorIDMorning})
+            });
         })
         .catch(error => {
             console.error('Error sending data:', error);

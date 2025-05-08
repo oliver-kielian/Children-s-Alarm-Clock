@@ -14,7 +14,7 @@
 // NeoPixel matrix
 #define LED_PIN 6
 #define NUM_LEDS 64
-uint8_t ledBrightness = 32; // LED matrix brightness 0-255
+uint8_t ledBrightness = 0 ; // LED matrix brightness 0-255
 int morningAlarmTime = 0;
 int nightAlarmTime = 0;
 int windDownAlarmTime = 0;
@@ -26,6 +26,7 @@ bool manualMode = true;
 
 long int rbg_NightTime;
 long int rbg_MorningTime;
+long int rbg_ManualTime;
 
 DateTime now;
 String AM_Time_Hour;
@@ -151,6 +152,7 @@ void loop() {
         currentState = NIGHTLIGHT;
       }
       if(manualLight == true){
+        Serial.println("Connected to MANUAL LIGHT: ");
         currentState = MANUALMODE; 
       }
       break;
@@ -172,7 +174,7 @@ void loop() {
           if (String((char) value[0]) == "M") {
             Serial.println("We Got A Message Of M Now Set Variables");
             AM_Color = String((char*) value).substring(2);
-            // Serial.println(AM_Color);
+            Serial.println(AM_Color);
           }
           if (String((char) value[0]) == "P" && String((char) value[1]) == "M") {
             Serial.println("We Got A Message Of PM Now Set Variables");
@@ -183,7 +185,12 @@ void loop() {
           }
           if (String((char) value[0]) == "A" && String((char) value[1]) == "M") {
             Serial.println("We Got A Message Of AM Now Set Variables");
-            AM_Time_Hour = String((char*) value).substring(3,4);
+            if(String((char) value[2]) == 0){
+              AM_Time_Hour = String((char*) value).substring(3,4);
+            }else{
+              AM_Time_Hour = String((char*) value).substring(2,4);
+            }
+            AM_Time_Hour = String((char*) value).substring(2,4);
             AM_Time_Minute = String((char*) value).substring(4);
             Serial.println(AM_Time_Hour);
             Serial.println(AM_Time_Minute);
@@ -192,12 +199,14 @@ void loop() {
             MANUAL_Color = String((char*) value).substring(3);
             Serial.println(MANUAL_Color);
             manualLight = true;
-            manualLight = true;
+            manualMode = true;
+
           }
           if(String((char) value[0]) == "L" && String((char) value[1]) == "F"){
             manualLight = false;
             matrix.clear();
             matrix.show();
+            currentState = NOTCONNECTED;
           }
           if (String((char) value[0]) == "B") {
             Serial.println("We Got A Message Of B Now Set Variables");
@@ -228,6 +237,10 @@ void loop() {
           if(ledBrightness == 0){
             ledBrightness = 60;
           }
+
+          matrix.clear();
+          matrix.show();
+          
           Serial.println(PM_Color);
           PM_Color.toCharArray(charbufPM,7);
           rbg_NightTime = strtoul(charbufPM,0,16);
@@ -289,9 +302,15 @@ void loop() {
         if(!morningLightDone && millis() - morningStart >= 300000UL){
           Serial.println("we are done");
           morningLightDone = true;
+          morningStart = 0;
+          matrix.clear();
+          matrix.show();
           currentState = NOTCONNECTED; 
         }
+
         if(manualLight == true){
+          matrix.clear();
+          matrix.show();
           morningLightDone = false;
           morningStart = 0;
           currentState = MANUALMODE;
@@ -299,24 +318,18 @@ void loop() {
       }
       break;
     case MANUALMODE:{
+        
         if(ledBrightness == 0){
           ledBrightness = 60;
         }
-        if(manualLight == false){
-          Serial.println("We are in manual light turn off");
-          currentState = NOTCONNECTED;
-          manualMode = false;
-          matrix.clear();
-          matrix.show();
-          break;
-        }
+        
         if(manualMode){
           manualMode = false;
           MANUAL_Color.toCharArray(charbufMAN,7);
-          rbg_MorningTime = strtoul(charbufMAN,0,16);
-          byte r =(byte)(rbg_MorningTime>>16);
-          byte g =(byte)(rbg_MorningTime>>8);
-          byte b =(byte)(rbg_MorningTime);
+          rbg_ManualTime = strtoul(charbufMAN,0,16);
+          byte r =(byte)(rbg_ManualTime>>16);
+          byte g =(byte)(rbg_ManualTime>>8);
+          byte b =(byte)(rbg_ManualTime);
 
           for (int i = 0; i < NUM_LEDS; i++) {
             matrix.setBrightness(ledBrightness);
@@ -324,7 +337,12 @@ void loop() {
           }
           matrix.show();
         }
-      } 
+        manualLight = false;
+        BLE.disconnect();
+        central = BLEDevice();
+        currentState = NOTCONNECTED;
+      }
+      break; 
     default:
       break;
   }
